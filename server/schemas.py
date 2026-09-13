@@ -1,17 +1,6 @@
 from pydantic import BaseModel, Field
 
 
-class Credentials(BaseModel):
-    username: str = Field(min_length=1, max_length=50)
-    password: str = Field(min_length=1, max_length=200)
-
-
-class AuthResult(BaseModel):
-    ok: bool
-    message: str = ""
-    username: str | None = None
-
-
 class PlaceOut(BaseModel):
     key: str
     title: str

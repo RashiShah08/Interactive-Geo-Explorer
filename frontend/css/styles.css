@@ -53,9 +53,9 @@ body { overflow: hidden; }
 .view.is-hidden > * { pointer-events: none; }
 
 /* ============================================================
-   AUTH
+   COVER
    ============================================================ */
-#view-auth { display: block; overflow-y: auto; }
+#view-landing { display: block; overflow-y: auto; }
 
 .auth-grid {
   display: grid;
@@ -220,126 +220,68 @@ body { overflow: hidden; }
   line-height: 1;
 }
 
-.auth-form-col {
+.enter-col {
   padding: clamp(40px, 5vw, 80px);
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 14px;
   background: var(--ink);
 }
 
-.tabs { position: relative; display: flex; gap: 28px; margin-bottom: 38px; }
-.tab {
-  background: none; border: 0; padding: 0 0 12px;
-  font-family: var(--sans); font-size: 14px; font-weight: 500;
-  color: var(--paper-mute); cursor: pointer;
-  transition: color 180ms var(--ease);
-}
-.tab.is-active { color: var(--paper); }
-.tab:hover { color: var(--paper); }
-.tabs::after {
-  content: ""; position: absolute; left: 0; right: 0; bottom: 0;
-  height: 1px; background: var(--ink-line);
-}
-.tab-marker {
-  position: absolute; bottom: 0; left: 0; height: 2px;
-  background: var(--accent);
-  transition: transform 280ms var(--ease), width 280ms var(--ease);
-}
-
-.field { display: block; margin-bottom: 20px; position: relative; }
-.field-label {
-  display: block; margin-bottom: 8px;
+.enter-kicker {
+  margin: 0 0 6px;
   font-family: var(--mono); font-size: 10px;
-  letter-spacing: 0.14em; text-transform: uppercase;
+  letter-spacing: 0.15em; text-transform: uppercase;
   color: var(--paper-mute);
-  transition: color 200ms var(--ease);
 }
-.field:focus-within .field-label { color: var(--accent-soft); }
 
-.field input {
+.enter-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "title arrow"
+    "sub   arrow";
+  align-items: center;
+  gap: 4px 14px;
   width: 100%;
-  padding: 13px 14px;
+  padding: 22px 24px;
   background: var(--ink-raised);
   border: 1px solid var(--ink-line);
   border-radius: 2px;
   color: var(--paper);
-  font-family: var(--sans); font-size: 15px;
-  transition: border-color 180ms var(--ease), background 180ms var(--ease);
-}
-.field input:focus { outline: none; background: #162134; }
-
-/* Focus underline that wipes out from the centre. */
-.field::after {
-  content: "";
-  position: absolute; left: 0; right: 0; bottom: 0;
-  height: 1px;
-  background: var(--accent);
-  transform: scaleX(0);
-  transition: transform 260ms var(--ease);
-}
-.field:focus-within::after { transform: scaleX(1); }
-
-/* Swapping between sign in and create account. */
-#auth-form.is-swapping .field,
-#auth-form.is-swapping .btn-primary { animation: form-swap 340ms var(--ease); }
-@keyframes form-swap {
-  from { opacity: 0; transform: translateY(7px); }
-  to   { opacity: 1; transform: none; }
-}
-
-.form-message {
-  min-height: 18px; margin: 0 0 16px;
-  font-size: 13px; line-height: 1.4;
-  color: var(--accent-soft);
-}
-.form-message.is-ok { color: #7FB08A; }
-
-.btn-primary {
-  position: relative;
-  width: 100%;
-  padding: 14px 20px;
-  background: var(--accent);
-  border: 0; border-radius: 2px;
-  color: #FFF3EE;
-  font-family: var(--sans); font-size: 14px; font-weight: 600;
-  letter-spacing: 0.01em;
+  text-align: left;
   cursor: pointer;
-  overflow: hidden;
-  transition: background 180ms var(--ease), transform 120ms var(--ease);
+  transition: border-color 220ms var(--ease), transform 220ms var(--ease),
+              background 220ms var(--ease);
 }
-.btn-primary:hover { background: #B14833; }
-.btn-primary:active { transform: translateY(1px); }
-.btn-primary[disabled] { opacity: 0.55; cursor: default; }
-.btn-primary.is-busy .btn-text { opacity: 0.35; }
-.btn-primary.is-busy::after {
-  content: ""; position: absolute; inset: 0; margin: auto;
-  width: 15px; height: 15px; border-radius: 50%;
-  border: 1.6px solid rgba(255,243,238,0.3);
-  border-top-color: #FFF3EE;
-  animation: spin 620ms linear infinite;
+.enter-card:hover, .enter-card:focus-visible {
+  border-color: var(--accent);
+  background: #16223A;
+  transform: translateY(-2px);
+  outline: none;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
-.btn-block { width: 100%; margin-top: 22px; }
+.enter-card svg {
+  grid-area: arrow;
+  color: var(--accent-soft);
+  transition: transform 220ms var(--ease);
+}
+.enter-card:hover svg { transform: translateX(4px); }
 
-.fineprint {
-  margin: 16px 0 0;
-  font-size: 12px; line-height: 1.5;
+.enter-card-title {
+  grid-area: title;
+  font-family: var(--serif); font-size: 28px; line-height: 1;
+}
+.enter-card-sub {
+  grid-area: sub;
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: 0.12em; text-transform: uppercase;
   color: var(--paper-mute);
 }
 
-.auth-reason {
-  margin: 0 0 22px;
-  padding: 12px 14px;
-  border-left: 2px solid var(--accent);
-  background: rgba(200,85,61,0.08);
-  font-size: 13px; line-height: 1.5;
-  color: var(--paper-dim);
-  animation: reveal-in 420ms var(--ease);
-}
-
 .link-btn {
-  margin-top: 24px;
+  margin-top: 10px;
   padding: 0;
   background: none; border: 0;
   color: var(--paper-mute);
@@ -349,6 +291,14 @@ body { overflow: hidden; }
   transition: color 160ms var(--ease);
 }
 .link-btn:hover { color: var(--accent-soft); }
+.link-btn kbd { margin-left: 2px; }
+
+.fineprint {
+  margin: 18px 0 0;
+  max-width: 46ch;
+  font-size: 12px; line-height: 1.6;
+  color: var(--paper-mute);
+}
 
 /* ============================================================
    CHROME (topbar shared by home + map)

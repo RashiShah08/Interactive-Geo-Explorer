@@ -13,7 +13,7 @@
 <body>
 
 <!-- ============================ AUTH ============================ -->
-<section id="view-auth" class="view">
+<section id="view-landing" class="view">
   <div class="auth-grid">
     <div class="auth-plate">
       <div id="auth-map" class="auth-map" aria-hidden="true"></div>
@@ -39,37 +39,28 @@
       </div>
     </div>
 
-    <div class="auth-form-col">
-      <p id="auth-reason" class="auth-reason is-hidden"></p>
+    <div class="enter-col">
+      <p class="enter-kicker">Two atlases</p>
 
-      <div class="tabs" role="tablist">
-        <button class="tab is-active" data-mode="login" role="tab" type="button">Sign in</button>
-        <button class="tab" data-mode="signup" role="tab" type="button">Create account</button>
-        <span class="tab-marker" aria-hidden="true"></span>
-      </div>
+      <button class="enter-card" data-atlas="world" type="button">
+        <span class="enter-card-title">The World</span>
+        <span class="enter-card-sub">18 landmarks · six continents</span>
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
 
-      <form id="auth-form" autocomplete="off" novalidate>
-        <label class="field">
-          <span class="field-label">Username</span>
-          <input id="auth-username" type="text" name="username" autocomplete="username" required>
-        </label>
-        <label class="field">
-          <span class="field-label">Password</span>
-          <input id="auth-password" type="password" name="password" autocomplete="current-password" required>
-        </label>
-        <p id="auth-message" class="form-message" role="status"></p>
-        <button id="auth-submit" class="btn-primary" type="submit">
-          <span class="btn-text">Sign in</span>
-        </button>
-      </form>
+      <button class="enter-card" data-atlas="india" type="button">
+        <span class="enter-card-title">India</span>
+        <span class="enter-card-sub">29 states &amp; UTs · six regions</span>
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
 
-      <button id="auth-skip" class="link-btn" type="button">
-        ← Keep browsing without an account
+      <button id="enter-search" class="link-btn" type="button">
+        or search all 47 places — <kbd>Ctrl K</kbd>
       </button>
 
       <p class="fineprint">
-        An account is only needed for the AI guide. Everything else — both atlases, all 47
-        records — is open. Passwords are hashed with bcrypt and stored in local SQLite.
+        No account, no tracking, nothing to sign up for. Every answer the guide gives is
+        quoted from these records or measured between them.
       </p>
     </div>
   </div>
@@ -91,9 +82,7 @@
       <button id="home-chat" class="btn-icon chat-inline" type="button" aria-label="Open guide" title="Guide">
         <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.5 9.5 0 0 1-2.8-.4L3 21l1.6-4.6A8.2 8.2 0 0 1 3.6 11.5a8.4 8.4 0 0 1 9-8.4 8.4 8.4 0 0 1 8.4 8.4Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
       </button>
-      <span id="home-user" class="user-chip is-hidden"></span>
-      <button id="logout-btn" class="btn-ghost is-hidden" type="button">Sign out</button>
-      <button id="signin-btn" class="btn-ghost is-hidden" type="button">Sign in</button>
+      <button id="home-cover" class="btn-ghost" type="button">Cover</button>
     </div>
   </header>
 
@@ -259,8 +248,7 @@
 <script src="/js/geo-shapes.js"></script>
 <script src="/js/api.js"></script>
 <script src="/js/plot.js"></script>
-<script src="/js/auth-hero.js"></script>
-<script src="/js/auth.js"></script>
+<script src="/js/hero.js"></script>
 <script src="/js/map.js"></script>
 <script src="/js/palette.js"></script>
 <script src="/js/chat.js"></script>

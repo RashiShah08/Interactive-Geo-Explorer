@@ -55,11 +55,15 @@ is a guarantee no hosted model can make.
 Run `pytest` to see both halves pinned: that it finds the right record, and that it declines
 what it cannot answer.
 
-## Accounts
+## No accounts
 
-Optional, and deliberately not a wall. Everything — both atlases, all 47 records, search,
-deep links, the guide — works with no account. Sign-up exists (bcrypt-hashed passwords in
-local SQLite, signed http-only session cookie) but nothing is gated behind it.
+There are none, on purpose. These are public reference facts, not user data; the guide runs
+locally and costs nothing per question, so there is nothing to meter and nobody to identify.
+That makes the whole app stateless — no database, no session, no secrets to configure, and
+nothing that breaks when the filesystem resets on a free host.
+
+Earlier versions did have sign-in, carried over from the original prototype. It is in the
+git history if you want to see it.
 
 ## The atlas cards and sign-in backdrop
 
@@ -76,20 +80,16 @@ so each card is a genuine preview of that atlas's contents rather than stock art
 | API | FastAPI + Uvicorn |
 | Frontend | Vanilla HTML/CSS/JS — no framework, no build step |
 | Maps | Leaflet.js (CDN) over OpenStreetMap tiles |
-| Auth | SQLite + bcrypt, signed session cookies (`itsdangerous`) |
 | Guide | A TF-IDF retriever written from scratch — no external service |
 
 ## Running it locally
 
 ```bash
 pip install -r requirements.txt
-
-cp .env.example .env
-# then set the one value in .env:
-#   SESSION_SECRET_KEY  python -c "import secrets; print(secrets.token_hex(32))"
-
 uvicorn server.main:app --reload
 ```
+
+Two dependencies, no configuration, no API keys.
 
 Open <http://127.0.0.1:8000> and pick an atlas — no account needed.
 Interactive API docs are at <http://127.0.0.1:8000/api/docs>.
@@ -98,21 +98,16 @@ Interactive API docs are at <http://127.0.0.1:8000/api/docs>.
 
 | Method | Route | Purpose |
 | --- | --- | --- |
-| `POST` | `/api/signup` | Create an account |
-| `POST` | `/api/login` | Sign in, sets the session cookie |
-| `POST` | `/api/logout` | Clear the session |
-| `GET` | `/api/me` | Current user, or 401 |
-| `GET` | `/api/places/world` | The eighteen world landmarks — public |
-| `GET` | `/api/places/india` | The twenty-nine states and UTs — public |
+| `GET` | `/api/places/world` | The eighteen world landmarks |
+| `GET` | `/api/places/india` | The twenty-nine states and UTs |
 | `POST` | `/api/chat` | Ask the local guide; returns an answer plus its citations |
 
 ## Project structure
 
 ```
-server/           FastAPI app — routers, schemas, session dependency
-  routers/          auth, places, chat
+server/           FastAPI app — routers and schemas
+  routers/          places, chat
 src/
-  auth/             SQLite connection + bcrypt signup/login
   data/             GeoPlace records with real coordinates
   guide/            TF-IDF index, intent handlers, answer composer
 frontend/
@@ -121,7 +116,7 @@ frontend/
   js/
     app.js            view router, deep links, boot
     api.js            fetch wrappers for every endpoint
-    auth.js           sign in / create account
+    hero.js           the cover's draw-in animation
     map.js            Leaflet, markers, filters, selection
     palette.js        Ctrl-K search over all 47 places
     plot.js           renders the SVG atlas previews
@@ -159,4 +154,4 @@ This is the third iteration of the same idea, and the earlier two are kept in `l
 ## Requirements
 
 - Python 3.10+
-- Nothing else: no API keys, no external services
+- Nothing else: no API keys, no database, no external services

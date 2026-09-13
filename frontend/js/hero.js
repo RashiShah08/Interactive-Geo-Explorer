@@ -1,7 +1,7 @@
-/* The sign-in plate: the world draws itself, then places land on it in turn.
-   Coordinates are a small curated set — the real /api/places routes require a
-   session, and they are not worth exposing pre-login just for a backdrop. */
-const AuthHero = (() => {
+/* The cover plate: the world draws itself, then places land on it in turn.
+   A small curated set of coordinates, so the cover paints immediately without
+   waiting on a fetch. */
+const Hero = (() => {
   const HIGHLIGHTS = [
     { title: "Taj Mahal", lat: 27.1751, lon: 78.0421, color: "#E0785F" },
     { title: "Eiffel Tower", lat: 48.8584, lon: 2.2945, color: "#6AA9D8" },
