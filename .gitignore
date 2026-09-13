@@ -131,6 +131,11 @@ __pypackages__/
 celerybeat-schedule
 celerybeat.pid
 
+# Interactive Geo Explorer app-specific
+data/*.db
+data/*.db-journal
+legacy/streamlit_app/.streamlit/secrets.toml
+
 # SageMath parsed files
 *.sage.py
 

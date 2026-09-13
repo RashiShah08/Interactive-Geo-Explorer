@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interactive Geo Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+<!-- ============================ AUTH ============================ -->
+<section id="view-auth" class="view">
+  <div class="auth-grid">
+    <div class="auth-plate">
+      <div id="auth-map" class="auth-map" aria-hidden="true"></div>
+      <div class="auth-plate-inner">
+        <div class="plate-rule reveal" style="--d:0ms"></div>
+        <p class="eyecatch reveal" style="--d:80ms">An atlas of record-breaking places</p>
+        <h1 class="display reveal" style="--d:160ms">Interactive<br><em>Geo Explorer</em></h1>
+        <p class="lede reveal" style="--d:260ms">
+          Forty-seven places, plotted at their true coordinates — eighteen world
+          landmarks and twenty-nine Indian states, each holding a record worth
+          knowing about.
+        </p>
+        <dl class="figures reveal" style="--d:340ms">
+          <div><dt>Landmarks</dt><dd data-count="18">0</dd></div>
+          <div><dt>States &amp; UTs</dt><dd data-count="29">0</dd></div>
+          <div><dt>Continents</dt><dd data-count="6">0</dd></div>
+        </dl>
+        <div class="ticker reveal" style="--d:460ms">
+          <span class="ticker-pin" aria-hidden="true"></span>
+          <span id="ticker-name" class="ticker-name"></span>
+          <span id="ticker-coord" class="ticker-coord"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="auth-form-col">
+      <p id="auth-reason" class="auth-reason is-hidden"></p>
+
+      <div class="tabs" role="tablist">
+        <button class="tab is-active" data-mode="login" role="tab" type="button">Sign in</button>
+        <button class="tab" data-mode="signup" role="tab" type="button">Create account</button>
+        <span class="tab-marker" aria-hidden="true"></span>
+      </div>
+
+      <form id="auth-form" autocomplete="off" novalidate>
+        <label class="field">
+          <span class="field-label">Username</span>
+          <input id="auth-username" type="text" name="username" autocomplete="username" required>
+        </label>
+        <label class="field">
+          <span class="field-label">Password</span>
+          <input id="auth-password" type="password" name="password" autocomplete="current-password" required>
+        </label>
+        <p id="auth-message" class="form-message" role="status"></p>
+        <button id="auth-submit" class="btn-primary" type="submit">
+          <span class="btn-text">Sign in</span>
+        </button>
+      </form>
+
+      <button id="auth-skip" class="link-btn" type="button">
+        ← Keep browsing without an account
+      </button>
+
+      <p class="fineprint">
+        An account is only needed for the AI guide. Everything else — both atlases, all 47
+        records — is open. Passwords are hashed with bcrypt and stored in local SQLite.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ HOME ============================ -->
+<section id="view-home" class="view is-hidden">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">IGE</span>
+      <span class="brand-name">Interactive Geo Explorer</span>
+    </div>
+    <div class="topbar-right">
+      <button id="home-search" class="search-trigger" type="button">
+        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        Search 47 places
+        <kbd>Ctrl K</kbd>
+      </button>
+      <button id="home-chat" class="btn-icon chat-inline" type="button" aria-label="Open guide" title="Guide">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.5 9.5 0 0 1-2.8-.4L3 21l1.6-4.6A8.2 8.2 0 0 1 3.6 11.5a8.4 8.4 0 0 1 9-8.4 8.4 8.4 0 0 1 8.4 8.4Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      </button>
+      <span id="home-user" class="user-chip is-hidden"></span>
+      <button id="logout-btn" class="btn-ghost is-hidden" type="button">Sign out</button>
+      <button id="signin-btn" class="btn-ghost is-hidden" type="button">Sign in</button>
+    </div>
+  </header>
+
+  <div class="home-body">
+    <div class="section-head">
+      <span class="section-index">01</span>
+      <h2 class="section-title">Choose an atlas</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="atlas-grid">
+      <article class="atlas-card" data-atlas="world" tabindex="0" role="button" aria-label="Open the world atlas">
+        <div class="atlas-plot" data-plot="world"></div>
+        <div class="atlas-meta">
+          <p class="atlas-kicker">Six continents · 18 landmarks</p>
+          <h3 class="atlas-title">The World</h3>
+          <p class="atlas-desc">
+            The Great Wall, Machu Picchu, Victoria Falls and fifteen more —
+            each plotted where it actually stands.
+          </p>
+          <span class="atlas-action">Open atlas <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </div>
+      </article>
+
+      <article class="atlas-card" data-atlas="india" tabindex="0" role="button" aria-label="Open the India atlas">
+        <div class="atlas-plot" data-plot="india"></div>
+        <div class="atlas-meta">
+          <p class="atlas-kicker">Six regions · 29 states &amp; UTs</p>
+          <h3 class="atlas-title">India</h3>
+          <p class="atlas-desc">
+            A world record from every state — the tallest sandcastle, the highest
+            piano recital, a bridge of 17,922 popsicle sticks.
+          </p>
+          <span class="atlas-action">Open atlas <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </div>
+      </article>
+    </div>
+
+    <div class="home-foot">
+      <div class="section-line"></div>
+      <button id="home-random" class="btn-ghost" type="button">Take me somewhere at random</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ MAP ============================ -->
+<section id="view-map" class="view is-hidden">
+  <header class="topbar">
+    <div class="brand">
+      <button id="back-btn" class="btn-back" type="button" aria-label="Back to atlas selection">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M19 12H6M11 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <span id="map-title" class="brand-name"></span>
+      <span id="map-count" class="count-chip"></span>
+    </div>
+    <div class="topbar-right">
+      <div id="filter-bar" class="filter-bar"></div>
+      <button id="map-search" class="btn-icon" type="button" aria-label="Search places" title="Search (Ctrl K)">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+      </button>
+      <button id="map-shuffle" class="btn-icon" type="button" aria-label="Show a random place" title="Random place">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M4 7h4l8 10h4M4 17h4l2-2.5M16 7h4M18 5l2 2-2 2M18 15l2 2-2 2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button id="map-chat" class="btn-icon chat-inline" type="button" aria-label="Open guide" title="Guide">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.5 9.5 0 0 1-2.8-.4L3 21l1.6-4.6A8.2 8.2 0 0 1 3.6 11.5a8.4 8.4 0 0 1 9-8.4 8.4 8.4 0 0 1 8.4 8.4Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="map-body">
+    <div class="map-stage">
+      <div id="leaflet-map"></div>
+      <div id="coord-readout" class="coord-readout">—</div>
+      <div id="map-loading" class="map-loading is-hidden"><span class="typing"><span></span><span></span><span></span></span></div>
+    </div>
+
+    <aside id="detail-panel" class="detail-panel">
+      <div id="detail-empty" class="detail-empty">
+        <div class="crosshair" aria-hidden="true">
+          <svg viewBox="0 0 48 48" width="40" height="40"><circle cx="24" cy="24" r="15" fill="none" stroke="currentColor" stroke-width="1"/><path d="M24 2v12M24 34v12M2 24h12M34 24h12" stroke="currentColor" stroke-width="1"/></svg>
+        </div>
+        <p>Select a marker to read its record.</p>
+        <p class="detail-hint">or press <kbd>Ctrl K</kbd> to search</p>
+      </div>
+
+      <article id="detail-content" class="detail-content is-hidden">
+        <figure class="detail-figure">
+          <img id="detail-image" src="" alt="">
+          <figcaption id="detail-index" class="detail-index"></figcaption>
+        </figure>
+        <div class="detail-nav">
+          <button id="detail-prev" class="btn-icon" type="button" aria-label="Previous place">
+            <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <p id="detail-category" class="detail-category"></p>
+          <button id="detail-next" class="btn-icon" type="button" aria-label="Next place">
+            <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <h2 id="detail-title" class="detail-title"></h2>
+        <button id="detail-coords" class="detail-coords" type="button" title="Centre the map here"></button>
+        <div class="detail-rule"></div>
+        <p id="detail-description" class="detail-description"></p>
+        <button id="detail-ask" class="btn-primary btn-block" type="button">
+          <span class="btn-text">Ask about this place</span>
+        </button>
+      </article>
+    </aside>
+  </div>
+</section>
+
+<!-- ========================= COMMAND PALETTE ========================= -->
+<div id="palette" class="palette" aria-hidden="true">
+  <div class="palette-scrim" data-close="palette"></div>
+  <div class="palette-box" role="dialog" aria-modal="true" aria-label="Search places">
+    <div class="palette-input-row">
+      <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+      <input id="palette-input" type="text" placeholder="Search all 47 places…" autocomplete="off" spellcheck="false">
+      <kbd>Esc</kbd>
+    </div>
+    <ul id="palette-results" class="palette-results"></ul>
+    <div class="palette-foot">
+      <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+      <span><kbd>↵</kbd> open</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================ CHAT ============================ -->
+<button id="chat-fab" class="chat-fab is-hidden" type="button" aria-label="Open guide">
+  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.5 9.5 0 0 1-2.8-.4L3 21l1.6-4.6A8.2 8.2 0 0 1 3.6 11.5a8.4 8.4 0 0 1 9-8.4 8.4 8.4 0 0 1 8.4 8.4Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+</button>
+
+<aside id="chat-panel" class="chat-panel" aria-hidden="true">
+  <header class="chat-head">
+    <div>
+      <p class="chat-kicker">Guide</p>
+      <h3 class="chat-title">Ask about anywhere</h3>
+    </div>
+    <div class="chat-head-actions">
+      <button id="chat-clear" class="btn-ghost btn-small" type="button">Clear</button>
+      <button id="chat-close" class="btn-icon" type="button" aria-label="Close guide">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div id="chat-log" class="chat-log"></div>
+
+  <div id="chat-suggestions" class="chat-suggestions"></div>
+
+  <form id="chat-form" class="chat-composer" autocomplete="off">
+    <input id="chat-input" type="text" placeholder="Ask about a place, a record, a country…" aria-label="Message">
+    <button id="chat-send" class="btn-send" type="submit" aria-label="Send">
+      <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </form>
+</aside>
+
+<div id="toast" class="toast" role="status"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="/js/geo-shapes.js"></script>
+<script src="/js/api.js"></script>
+<script src="/js/plot.js"></script>
+<script src="/js/auth-hero.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/map.js"></script>
+<script src="/js/palette.js"></script>
+<script src="/js/chat.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>
