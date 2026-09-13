@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Interactive Geo Explorer</title>
+<meta name="theme-color" content="#0B1220">
+<link rel="icon" href="/brand/mark-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/brand/mark.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/brand/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -55,7 +59,7 @@
       </button>
 
       <button id="enter-search" class="link-btn" type="button">
-        or search all 47 places — <kbd>Ctrl K</kbd>
+        or search all 47 places<span class="shortcut"> — <kbd>Ctrl K</kbd></span>
       </button>
 
       <p class="fineprint">
@@ -70,7 +74,7 @@
 <section id="view-home" class="view is-hidden">
   <header class="topbar">
     <div class="brand">
-      <span class="brand-mark">IGE</span>
+      <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="14" fill="none" stroke="#ECE7DE" stroke-width="5"/><path d="M32 7v11M32 46v11M7 32h11M46 32h11" stroke="#ECE7DE" stroke-width="5" stroke-linecap="round"/><circle cx="32" cy="32" r="6.5" fill="#C8553D"/></svg>
       <span class="brand-name">Interactive Geo Explorer</span>
     </div>
     <div class="topbar-right">

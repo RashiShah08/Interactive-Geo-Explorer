@@ -25,7 +25,7 @@ app.include_router(chat.router, prefix="/api")
 # case locally and on any host running this as a normal process. On a CDN-backed
 # deploy the static routes never reach Python and the directory may not be in
 # the function bundle at all, so mounting is conditional rather than assumed.
-for folder in ("images", "css", "js"):
+for folder in ("images", "css", "js", "brand"):
     directory = FRONTEND_DIR / folder
     if directory.is_dir():
         app.mount(f"/{folder}", StaticFiles(directory=directory), name=folder)
